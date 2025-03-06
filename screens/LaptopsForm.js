@@ -1,17 +1,25 @@
 import { View,Text, StyleSheet,Alert } from "react-native"
 import { Input,Button } from "@rneui/base";
 import { useState } from "react";
-import {saveLaptopsRest} from "../rest_client/laptops"
+import {saveLaptopsRest, updateLaptopsRest} from "../rest_client/laptops"
 
-export const LaptopsFrom = ({navigation})=>{
+export const LaptopsFrom = ({navigation, route})=>{
 
-    const [marca, setMarca]=useState();
-    const [procesador, setProcesador]=useState();
-    const [memoria, setMemoria]=useState();
+    let laptopRetrived = route.params.laptopParam;
+    let isNew = true;
+
+    if (laptopRetrived != null) {
+        isNew = false;
+    }
+
+
+    const [marca, setMarca]=useState(isNew ? null : laptopRetrived.marca);
+    const [procesador, setProcesador]=useState(isNew ? null : laptopRetrived.procesador);
+    const [memoria, setMemoria]=useState(isNew ? null : laptopRetrived.memoria);
     
 
     const showMessage=()=>{
-        Alert.alert("CONFIRMACION","Se creo el registro de la Laptop");
+        Alert.alert("CONFIRMACION", isNew ? "Se creo el registro de la laptop" : "Registro Laptop Actualizado");
     }
     const saveLaptop=()=>{
         console.log("saveLaptopsRest");
@@ -25,6 +33,18 @@ export const LaptopsFrom = ({navigation})=>{
             showMessage
         );
     }
+     const updateLaptop = () => {
+            console.log("actualizando laptop");
+            updateLaptopsRest({
+                id:laptopRetrived.id,
+                marca: marca,
+                procesador: procesador,
+                memoria:memoria
+    
+    
+            }, showMessage)
+        }
+    
 
 
     return <View style={styles.container}>
@@ -52,7 +72,7 @@ export const LaptopsFrom = ({navigation})=>{
         />
         <Button 
             title="GUARDAR"
-            onPress={saveLaptop}
+            onPress={isNew ?saveLaptop:updateLaptop}
         />
     </View>
 }

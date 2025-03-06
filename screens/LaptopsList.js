@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList } from "react-native"
+import { View, Text, StyleSheet, FlatList,TouchableHighlight } from "react-native"
 import { Button, ListItem, FAB } from "@rneui/base"
 import { getAllLaptops } from "../rest_client/laptops"
 import React, { useState } from 'react';
@@ -7,12 +7,17 @@ export const LaptopsList = ({navigation}) => {
     const [laptopsList, setLaptopsList] = useState([]);
 
     const LaptopsItem = ({ laptop }) => {
-        return <ListItem>
+        return <TouchableHighlight onPress={()=>{
+            navigation.navigate("ContactsFormNav",{laptopParam:laptop});
+        }}>
+            <ListItem>
             <ListItem.Content>
                 <ListItem.Title>{laptop.marca}  {laptop.procesador}</ListItem.Title>
                 <ListItem.Subtitle>{laptop.memoria}</ListItem.Subtitle>
             </ListItem.Content>
         </ListItem>
+        </TouchableHighlight>
+        
     }
 
     const fnRefreshList = (laptops) => {
@@ -34,7 +39,7 @@ export const LaptopsList = ({navigation}) => {
         />
         <FAB
             title="+"
-            onPress={() => { navigation.navigate("ContactsFormNav") }}
+            onPress={() => { navigation.navigate("ContactsFormNav",{}) }}
         />
     </View>
 }
